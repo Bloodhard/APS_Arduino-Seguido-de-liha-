@@ -9,8 +9,9 @@ int MET = 6;       // motor da esquerda para trás
 int MEF = 5;       // motor da esquerda para frente
 int MDF = 4;       // motor da direita para frente
 int MDT = 3;       // motor da direita para trás
-int POT = 255;     // potencia dos motores
-int POTV = 160;
+int POTMAX = 255;    // potencia maxima dos motores
+int POTI = 160;    //Potencia intermediaria
+int POTV = 80;    // Potencia virar
 /*RGB*/
 int LDR = 7;                                                                                   //Led vermelho
 Adafruit_TCS34725 SRGB = Adafruit_TCS34725(TCS34725_INTEGRATIONTIME_600MS, TCS34725_GAIN_1X);  // Sensor RGB
@@ -35,6 +36,14 @@ void setup() {
   pinMode(LDR, OUTPUT);
 }
 
+void parar() {
+  analogWrite(MDF, 0);
+  analogWrite(MEF, 0);
+  analogWrite(MDT, 0);
+  analogWrite(MET, 0);
+  delay(900000000);
+}
+
 void andar() {
   if (digitalRead(SensorE) == LOW && digitalRead(SensorD) == LOW && digitalRead(SensorC) == LOW) {  // detectou a linha branca nos 3 sensores
     analogWrite(MDF, 0);
@@ -52,26 +61,49 @@ void andar() {
     analogWrite(MDT, 0);
     analogWrite(MET, POTV);
   } else if (digitalRead(SensorE) == HIGH && digitalRead(SensorD) == HIGH && digitalRead(SensorC) == LOW) {  // detectou a linha branca no meio
-    analogWrite(MDF, POT);
-    analogWrite(MEF, POT);
+    analogWrite(MDF, POTMAX);
+    analogWrite(MEF, POTMAX);
     analogWrite(MDT, 0);
     analogWrite(MET, 0);
   } else {  //
-    analogWrite(MDF, POT);
-    analogWrite(MEF, POT);
+    int cont = 0;
+    analogWrite(MDF, POTMAX);
+    analogWrite(MEF, POTMAX);
     analogWrite(MDT, 0);
     analogWrite(MET, 0);
+    while (cont <= 100) {
+      if (digitalRead(SensorE) == LOW && digitalRead(SensorD) == LOW && digitalRead(SensorC) == LOW) {  // detectou a linha branca nos 3 sensores
+        analogWrite(MDF, 0);
+        analogWrite(MEF, 0);
+        analogWrite(MDT, 0);
+        analogWrite(MET, 0);
+        cont = 0;
+      } else if (digitalRead(SensorE) == LOW && digitalRead(SensorD) == HIGH && digitalRead(SensorC) == HIGH) {  // detectou a linha branca na esquerda
+        analogWrite(MDF, 0);
+        analogWrite(MEF, POTV);
+        analogWrite(MDT, POTV);
+        analogWrite(MET, 0);
+        cont = 0;
+      } else if (digitalRead(SensorE) == HIGH && digitalRead(SensorD) == LOW && digitalRead(SensorC) == HIGH) {  // detectou a linha branca na direita
+        analogWrite(MDF, POTV);
+        analogWrite(MEF, 0);
+        analogWrite(MDT, 0);
+        analogWrite(MET, POTV);
+        cont = 0;
+      } else if (digitalRead(SensorE) == HIGH && digitalRead(SensorD) == HIGH && digitalRead(SensorC) == LOW) {  // detectou a linha branca no meio
+        analogWrite(MDF, POTMAX);
+        analogWrite(MEF, POTMAX);
+        analogWrite(MDT, 0);
+        analogWrite(MET, 0);
+        cont = 0;
+      }
+      delay(100);
+      cont += 1;
+    }
+    parar();
   }
 }
 
-int cont = 0;
-void parar() {
-  analogWrite(MDF, 0);
-  analogWrite(MEF, 0);
-  analogWrite(MDT, 0);
-  analogWrite(MET, 0);
-  delay(900000000);
-}
 
 
 void loop() {
@@ -102,16 +134,7 @@ void loop() {
       }
     }
     */
-
-  if (digitalRead(SensorE) == HIGH && digitalRead(SensorD) == HIGH && digitalRead(SensorC) == HIGH) {
-    while (cont <= 5) {
-      andar();
-      cont += 1;
-    }
-  }
-  parar();
-
-
+  andar();
 
   delay(20);
   analogWrite(MDF, 0);
