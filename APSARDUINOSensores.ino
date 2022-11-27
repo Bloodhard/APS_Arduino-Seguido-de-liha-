@@ -9,10 +9,11 @@ int MET = 6;       // motor da esquerda para trás
 int MEF = 5;       // motor da esquerda para frente
 int MDF = 4;       // motor da direita para frente
 int MDT = 3;       // motor da direita para trás
-int POTMAX = 255;    // potencia maxima dos motores
+int POTMAX = 255;  // potencia maxima dos motores
 int POTI = 160;    //Potencia intermediaria
-int POTV = 80;    // Potencia virar
+int POTV = 80;     // Potencia virar
 /*RGB*/
+//int ArrayCores[256]={9, 3, 2, 4, 3, 2, 7, 8, 9, 11}; Exemplo para teste
 int LDR = 7;                                                                                   //Led vermelho
 Adafruit_TCS34725 SRGB = Adafruit_TCS34725(TCS34725_INTEGRATIONTIME_600MS, TCS34725_GAIN_1X);  // Sensor RGB
 
@@ -124,8 +125,11 @@ void loop() {
       }
       else if(r > b && r > g) { //Se intensidade de vermelho for maior que azul e se intensidade de vermelho for maior que verde.
         parar();
-      }
-      else {
+      }else if(r == g && r > b && g > b || r == 255 && g == 255 & b == 0){
+        analogWrite(r, 255);
+        analogWrite(g, 0);
+        analogWrite(b, 0);
+      }else {
         parar();  
       }
     }
