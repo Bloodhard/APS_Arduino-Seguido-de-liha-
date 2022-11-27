@@ -107,7 +107,7 @@ void andar() {
 
 
 void loop() {
-  /*
+  
     //RGB2Code//
     uint16_t r, g, b, c, TemperaturaCor, LUX;
     SRGB.getRawData(&r, &g, &b, &c); //Pega os valores "crus" do sensor referentes ao Vermelho(r), Verde(g), Azul(b) e da Claridade(c).
@@ -118,23 +118,19 @@ void loop() {
     LUX = SRGB.calculateLux(r, g, b);//Nivel de intensidade luminosa
 
     if(c < 5000) {
-      if(r > b && r > g) {  //Se intensidade de vermelho for maior que azul e se intensidade de vermelho for maior que verde.
+      if(g > b && g > r) {  
         //parar os motores
-        analogWrite(MDF, 0);
-        analogWrite(MEF, 0);   
-        analogWrite(MDT, 0);
-        analogWrite(MET, 0);   
-        delay(100);
+        andar();
       }
-      else if(r && g > g && b == 0) { //Para formar o amarelo é necessario #FFFF00 (Vermelho[red] e verde[green]) e zero para azul. 
-        digitalWrite(LDR, HIGH); //Se atender a condição para o amarelo ligar Led vermelho
+      else if(r > b && r > g) { //Se intensidade de vermelho for maior que azul e se intensidade de vermelho for maior que verde.
+        parar();
       }
       else {
-        digitalWrite(LDR, HIGH); //Se não atender a condição para o amarelo ligar Led vermelho
+        parar();  
       }
     }
-    */
-  andar();
+    
+  
 
   delay(20);
   analogWrite(MDF, 0);
