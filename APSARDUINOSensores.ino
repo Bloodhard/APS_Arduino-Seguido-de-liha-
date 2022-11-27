@@ -40,6 +40,7 @@ void setup() {
       analogWrite(MEF, 0);
       analogWrite(MDT, 0);
       analogWrite(MET, 0);
+      delay(100000000);
     }
 
   void loop() {
@@ -97,8 +98,8 @@ void setup() {
       analogWrite(MEF, POT);
       analogWrite(MDT, 0);
       analogWrite(MET, 0);
-      Timer1.initialize(2000000);
-      Timer1.attachInterrupt(parar);
+      delay(100000);
+      parar();
     } 
 
 
