@@ -9,6 +9,7 @@ int MEF = 5;       // motor da esquerda para frente
 int MDF = 4;       // motor da direita para frente
 int MDT = 3;       // motor da direita para trás
 int POT = 255;     // potencia dos motores
+int POTV = 160;
 /*RGB*/
 int LDR = 7;  //Led vermelho
 Adafruit_TCS34725 SRGB = Adafruit_TCS34725(TCS34725_INTEGRATIONTIME_600MS, TCS34725_GAIN_1X);// Sensor RGB
@@ -35,6 +36,7 @@ void setup() {
 
 
   void loop() {
+    /*
     //RGB2Code//
     uint16_t r, g, b, c, TemperaturaCor, LUX;
     SRGB.getRawData(&r, &g, &b, &c); //Pega os valores "crus" do sensor referentes ao Vermelho(r), Verde(g), Azul(b) e da Claridade(c).
@@ -60,30 +62,31 @@ void setup() {
         digitalWrite(LDR, HIGH); //Se não atender a condição para o amarelo ligar Led vermelho
       }
     }
+    */
  
-    if (digitalRead(SensorE) == LOW && digitalRead(SensorD) == LOW && digitalRead(SensorC) == LOW) {  // detectou a linha branca nos dois sensores
+    if (digitalRead(SensorE) == LOW && digitalRead(SensorD) == LOW && digitalRead(SensorC) == LOW) {  // detectou a linha branca nos 3 sensores
       analogWrite(MDF, 0);
       analogWrite(MEF, 0);
       analogWrite(MDT, 0);
       analogWrite(MET, 0);
-    } else if (digitalRead(SensorE) == LOW && digitalRead(SensorD) == HIGH && digitalRead(SensorC) == LOW) {  // detectou a linha branca na esquerda
-      analogWrite(MDF, POT);
+    } else if (digitalRead(SensorE) == LOW && digitalRead(SensorD) == HIGH && digitalRead(SensorC) == HIGH) {  // detectou a linha branca na esquerda
+      analogWrite(MDF, 0);
+      analogWrite(MEF, POTV);
+      analogWrite(MDT, POTV);
+      analogWrite(MET, 0);
+    } else if (digitalRead(SensorE) == HIGH && digitalRead(SensorD) == LOW && digitalRead(SensorC) == HIGH) {  // detectou a linha branca na direita
+      analogWrite(MDF, POTV);
       analogWrite(MEF, 0);
       analogWrite(MDT, 0);
+      analogWrite(MET, POTV);
+    } else if (digitalRead(SensorE) == HIGH && digitalRead(SensorD) == HIGH && digitalRead(SensorC) == LOW) {  // detectou a linha branca no meio
+      analogWrite(MDF, POT);
+      analogWrite(MEF, POT);
+      analogWrite(MDT, 0);
       analogWrite(MET, 0);
-    } else if (digitalRead(SensorE) == HIGH && digitalRead(SensorD) == LOW && digitalRead(SensorD) == LOW) {  // detectou a linha branca na direita
+    } else {  // 
       analogWrite(MDF, 0);
-      analogWrite(MEF, POT);
-      analogWrite(MDT, 0);
-      analogWrite(MET, 0);
-    } else if (digitalRead(SensorE) == LOW && digitalRead(SensorD) == LOW && digitalRead(SensorD) == HIGH) {  // detectou a linha branca na direita
-      analogWrite(MDF, POT);
-      analogWrite(MEF, POT);
-      analogWrite(MDT, 0);
-      analogWrite(MET, 0);
-    } else {  // nao detectou nenhuma linha branca
-      analogWrite(MDF, POT);
-      analogWrite(MEF, POT);
+      analogWrite(MEF, 0);
       analogWrite(MDT, 0);
       analogWrite(MET, 0);
     }
