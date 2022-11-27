@@ -36,8 +36,13 @@ void setup() {
 
   void loop() {
     //RGB2Code//
-    uint16_t r, g, b, c;
+    uint16_t r, g, b, c, TemperaturaCor, LUX;
     SRGB.getRawData(&r, &g, &b, &c); //Pega os valores "crus" do sensor referentes ao Vermelho(r), Verde(g), Azul(b) e da Claridade(c).
+
+    
+    TemperaturaCor = SRGB.calculateColorTemperature (r, g, b);//Cálculo dos niveis de cores
+
+    LUX = SRGB.calculateLux(r, g, b);//Nivel de intensidade luminosa
 
     if(c < 5000) {
       if(r > b && r > g) {  //Se intensidade de vermelho for maior que azul e se intensidade de vermelho for maior que verde.
