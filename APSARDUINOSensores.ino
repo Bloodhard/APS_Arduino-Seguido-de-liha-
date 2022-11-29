@@ -18,6 +18,8 @@ Adafruit_TCS34725 SRGB = Adafruit_TCS34725(TCS34725_INTEGRATIONTIME_600MS, TCS34
 
 
 void setup() {
+
+
   //Motores
   pinMode(MEF, OUTPUT);
   pinMode(MET, OUTPUT);
@@ -34,6 +36,12 @@ void setup() {
   //Sensor RGB/LED
   Serial.begin(9600);  //Iniciamos o monitor serial na taxa de transmissão de 9600
   pinMode(LDR, OUTPUT);
+  if (SRGB.begin()) {
+    Serial.println("Found sensor");
+  } else {
+    Serial.println("No TCS34725 found ... check your connections");
+    while (1);
+  }
 }
 
 void parar() {
@@ -84,34 +92,51 @@ void andar() {
 
 
 void loop() {
-    /* Codigo com Sensor comentado
-    //RGB2Code//
-    uint16_t r, g, b, c, TemperaturaCor, LUX;
-    SRGB.getRawData(&r, &g, &b, &c); //Pega os valores "crus" do sensor referentes ao Vermelho(r), Verde(g), Azul(b) e da Claridade(c).
-
-    
-    TemperaturaCor = SRGB.calculateColorTemperature (r, g, b);//Cálculo dos niveis de cores
-
-    LUX = SRGB.calculateLux(r, g, b);//Nivel de intensidade luminosa
-
-    if(c < 5000) {
-      if(g > b && g > r) {  
-        //parar os motores
-        andar();
-      }
-      else if(r > b && r > g) { //Se intensidade de vermelho for maior que azul e se intensidade de vermelho for maior que verde.
-        parar();
-      }else if(r == g && r > b && g > b || r == 255 && g == 255 & b == 0){
-        analogWrite(r, 255);
-        analogWrite(g, 0);
-        analogWrite(b, 0);
-      }else {
-        parar();  
-      }
-    }
-    */
-    andar();
   
+  andar();
+
+  /*
+  //Logica do carrinho com sensor RGB
+  //RGB2Code//
+  uint16_t r, g, b, c, TemperaturaCor, LUX;
+  SRGB.getRawData(&r, &g, &b, &c);  //Pega os valores "crus" do sensor referentes ao Vermelho(r), Verde(g), Azul(b) e da Claridade(c).
+  
+
+
+  TemperaturaCor = SRGB.calculateColorTemperature(r, g, b);  //Cálculo dos niveis de cores
+
+  LUX = SRGB.calculateLux(r, g, b);  //Nivel de intensidade luminosa
+
+  if (g > b && g > r) {
+    //parar os motores
+    Serial.print("Verde");
+    andar();
+  } else if (r > b && r > g) {  //Se intensidade de vermelho for maior que azul e se intensidade de vermelho for maior que verde.
+    Serial.print("vermelho");
+    parar();
+  } else if (r == g && r > b && g > b || r == 255 && g == 255 & b == 0) {
+    analogWrite(r, 255);
+    analogWrite(g, 0);
+    analogWrite(b, 0);
+  } else {
+    parar();
+  }
+  */
+  /*
+  //Teste cor
+  uint16_t r, g, b, c;
+  SRGB.getRawData(&r, &g, &b, &c);
+  Serial.print("Red: "); Serial.print(r, DEC); Serial.print(" ");
+  Serial.print("Green: "); Serial.print(g, DEC); Serial.print(" ");
+  Serial.print("Blue: "); Serial.print(b, DEC); Serial.print(" ");
+  Serial.print("Color: "); Serial.print(c, DEC); Serial.print(" ");
+  Serial.println(" ");
+  analogWrite (LDR, c); 
+  delay(100);
+
+  */
+
+
 
   delay(20);
   analogWrite(MDF, 0);
