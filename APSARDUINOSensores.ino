@@ -1,6 +1,5 @@
 #include <Wire.h>               //Esta biblioteca permite que você se comunique com dispositivos I2C/TWI. Nas placas Arduino com o layout R3 (pinagem 1.0), o SDA (linha de dados) e SCL (linha de clock) estão nos cabeçalhos dos pinos próximos ao pino AREF. O Arduino Due possui duas interfaces I2C/TWI SDA1 e SCL1 próximas ao pino AREF e uma adicional nos pinos 20 e 21.
 #include "Adafruit_TCS34725.h"  //biblioteca do sensor RGB TCS34725
-#include <TimerOne.h>
 
 int SensorD = A1;  // sensor de linha da direita
 int SensorC = 2;   // sensor de linha do meio
@@ -45,6 +44,13 @@ void parar() {
   delay(900000000);
 }
 
+void pararS() {
+  analogWrite(MDF, 0);
+  analogWrite(MEF, 0);
+  analogWrite(MDT, 0);
+  analogWrite(MET, 0);
+}
+
 void andar() {
   if (digitalRead(SensorE) == LOW && digitalRead(SensorD) == LOW && digitalRead(SensorC) == LOW) {  // detectou a linha branca nos 3 sensores
     analogWrite(MDF, 0);
@@ -52,15 +58,15 @@ void andar() {
     analogWrite(MDT, 0);
     analogWrite(MET, 0);
   } else if (digitalRead(SensorE) == LOW && digitalRead(SensorD) == HIGH && digitalRead(SensorC) == HIGH) {  // detectou a linha branca na esquerda
-    analogWrite(MDF, 0);
-    analogWrite(MEF, POTV);
-    analogWrite(MDT, POTV);
-    analogWrite(MET, 0);
-  } else if (digitalRead(SensorE) == HIGH && digitalRead(SensorD) == LOW && digitalRead(SensorC) == HIGH) {  // detectou a linha branca na direita
-    analogWrite(MDF, POTV);
+    analogWrite(MDF, POTMAX);
     analogWrite(MEF, 0);
     analogWrite(MDT, 0);
-    analogWrite(MET, POTV);
+    analogWrite(MET, 0);
+  } else if (digitalRead(SensorE) == HIGH && digitalRead(SensorD) == LOW && digitalRead(SensorC) == HIGH) {  // detectou a linha branca na direita
+    analogWrite(MDF, 0);
+    analogWrite(MEF, POTMAX);
+    analogWrite(MDT, 0);
+    analogWrite(MET, 0);
   } else if (digitalRead(SensorE) == HIGH && digitalRead(SensorD) == HIGH && digitalRead(SensorC) == LOW) {  // detectou a linha branca no meio
     analogWrite(MDF, POTMAX);
     analogWrite(MEF, POTMAX);
@@ -72,43 +78,13 @@ void andar() {
     analogWrite(MEF, POTMAX);
     analogWrite(MDT, 0);
     analogWrite(MET, 0);
-    while (cont <= 100) {
-      if (digitalRead(SensorE) == LOW && digitalRead(SensorD) == LOW && digitalRead(SensorC) == LOW) {  // detectou a linha branca nos 3 sensores
-        analogWrite(MDF, 0);
-        analogWrite(MEF, 0);
-        analogWrite(MDT, 0);
-        analogWrite(MET, 0);
-        cont = 0;
-      } else if (digitalRead(SensorE) == LOW && digitalRead(SensorD) == HIGH && digitalRead(SensorC) == HIGH) {  // detectou a linha branca na esquerda
-        analogWrite(MDF, 0);
-        analogWrite(MEF, POTV);
-        analogWrite(MDT, POTV);
-        analogWrite(MET, 0);
-        cont = 0;
-      } else if (digitalRead(SensorE) == HIGH && digitalRead(SensorD) == LOW && digitalRead(SensorC) == HIGH) {  // detectou a linha branca na direita
-        analogWrite(MDF, POTV);
-        analogWrite(MEF, 0);
-        analogWrite(MDT, 0);
-        analogWrite(MET, POTV);
-        cont = 0;
-      } else if (digitalRead(SensorE) == HIGH && digitalRead(SensorD) == HIGH && digitalRead(SensorC) == LOW) {  // detectou a linha branca no meio
-        analogWrite(MDF, POTMAX);
-        analogWrite(MEF, POTMAX);
-        analogWrite(MDT, 0);
-        analogWrite(MET, 0);
-        cont = 0;
-      }
-      delay(100);
-      cont += 1;
-    }
-    parar();
   }
 }
 
 
 
 void loop() {
-  
+    /* Codigo com Sensor comentado
     //RGB2Code//
     uint16_t r, g, b, c, TemperaturaCor, LUX;
     SRGB.getRawData(&r, &g, &b, &c); //Pega os valores "crus" do sensor referentes ao Vermelho(r), Verde(g), Azul(b) e da Claridade(c).
@@ -133,7 +109,8 @@ void loop() {
         parar();  
       }
     }
-    
+    */
+    andar();
   
 
   delay(20);
